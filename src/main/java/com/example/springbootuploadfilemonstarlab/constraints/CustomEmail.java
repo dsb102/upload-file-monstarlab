@@ -2,7 +2,6 @@ package com.example.springbootuploadfilemonstarlab.constraints;
 
 
 import com.example.springbootuploadfilemonstarlab.validate.EmailValidator;
-import com.example.springbootuploadfilemonstarlab.validate.UsernameValidator;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
 import static java.lang.annotation.ElementType.FIELD;
@@ -19,7 +18,7 @@ import javax.validation.Payload;
 @Target({ TYPE, FIELD, ANNOTATION_TYPE })
 @Retention(RUNTIME)
 @Documented
-public @interface CusEmail {
+public @interface CustomEmail {
     String message() default "Email must be in the correct format, not null or empty";
     Class <?> [] groups() default {};
     Class <? extends Payload> [] payload() default {};

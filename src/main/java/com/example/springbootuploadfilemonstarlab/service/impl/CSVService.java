@@ -5,13 +5,12 @@ import com.example.springbootuploadfilemonstarlab.exception.EmailFormatException
 import com.example.springbootuploadfilemonstarlab.exception.UsernameFormatException;
 import com.example.springbootuploadfilemonstarlab.model.User;
 import com.example.springbootuploadfilemonstarlab.repository.UserRepository;
-import com.example.springbootuploadfilemonstarlab.service.CSVHelper;
+import com.example.springbootuploadfilemonstarlab.csv.CSVHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,8 +29,8 @@ public class CSVService {
                 oldUser.setEmail(user.getEmail());
                 oldUser.setBirthday(user.getBirthday());
                 userRepository.save(oldUser);
-            }
-            userRepository.save(user);
+            } else
+                userRepository.save(user);
         });
     }
     // check user existed

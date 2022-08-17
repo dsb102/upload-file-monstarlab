@@ -1,7 +1,6 @@
 package com.example.springbootuploadfilemonstarlab.service.impl;
 
 import com.example.springbootuploadfilemonstarlab.service.IStorageService;
-import com.sun.xml.bind.api.impl.NameConverter;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
@@ -14,15 +13,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 @Service
-public class FileService implements IStorageService {
+public class StorageService implements IStorageService {
     private final Path storageFolder = Paths.get("uploads");
 
-    public FileService() {
+    public StorageService() {
         try {
             Files.createDirectories(storageFolder);
         } catch (IOException e) {

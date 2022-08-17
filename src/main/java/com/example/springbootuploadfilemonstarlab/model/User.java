@@ -1,9 +1,8 @@
 package com.example.springbootuploadfilemonstarlab.model;
 
 import com.example.springbootuploadfilemonstarlab.constraints.BirthDate;
-import com.example.springbootuploadfilemonstarlab.constraints.CusEmail;
+import com.example.springbootuploadfilemonstarlab.constraints.CustomEmail;
 import com.example.springbootuploadfilemonstarlab.constraints.Username;
-import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.constraints.*;
 import java.time.LocalDate;
 
 @Entity
@@ -21,7 +19,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 @NoArgsConstructor
 @Validated
-@Table(name = "tbl_upload_user")
+@Table(name = "tbl_upload_users")
 public class User {
     @Id
     private Long id;
@@ -29,7 +27,7 @@ public class User {
     @Username
     private String username;
 
-    @CusEmail
+    @CustomEmail
     private String email;
 
     @BirthDate

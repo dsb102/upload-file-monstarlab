@@ -1,15 +1,15 @@
-package com.example.springbootuploadfilemonstarlab.service;
+package com.example.springbootuploadfilemonstarlab.csv;
 
 import com.example.springbootuploadfilemonstarlab.exception.BirthdayPastException;
 import com.example.springbootuploadfilemonstarlab.exception.EmailFormatException;
 import com.example.springbootuploadfilemonstarlab.exception.UsernameFormatException;
 import com.example.springbootuploadfilemonstarlab.model.User;
+import lombok.Value;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.springframework.context.annotation.PropertySource;
 
-import javax.validation.ConstraintValidatorContext;
-import javax.validation.ConstraintViolationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,14 +22,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+//@PropertySource("classpath:messages/messages_exception.properties")
+//@PropertySource("")
 public class CSVHelper {
     private static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-    private static final int minLength = 3;
-    private static final int maxLength = 30;
-    private static final DateTimeFormatter dft = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-    public static String TYPE = "text/csv";
-    static String[] HEADERs = {"id", "username", "email", "birthday"};
+    private static final int MIN_LENGTH = 3;
+    private static final int MAX_LENGTH = 30;
+    private static final String MESSAGE_USERNAME_FORMAT_EXCEPTION = "Username phải từ 3 đến 30 kí tự";
+    private static String MESSAGE_EMAIL_FORMAT_EXCEPTION = "Email phải đúng định dạng";
+    private static String MESSAGE_BIRTHDAY_PAST_EXCEPTION = "Sinh nhật phải là quá khứ";
+    private static final DateTimeFormatter DTF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static final String TYPE = "text/csv";
+    public static final String[] HEADERS = {"id", "username", "email", "birthday"};
 
     public static List<User> csvToTutorials(InputStream is) {
         try (BufferedReader fileReader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
@@ -41,24 +46,23 @@ public class CSVHelper {
             Iterable<CSVRecord> csvRecords = csvParser.getRecords();
 
             for (CSVRecord csvRecord : csvRecords) {
-                Long id = Long.parseLong(csvRecord.get("id"));
-                String username = csvRecord.get("username");
+                Long id = Long.parseLong(csvRecord.get(HEADERS[0]));
+                String username = csvRecord.get(HEADERS[1]);
                 if (!isValidUsername(username))
-                    throw new UsernameFormatException("Độ dài username từ 3 đến 30");
-                String email = csvRecord.get("email");
+                    throw new UsernameFormatException(MESSAGE_USERNAME_FORMAT_EXCEPTION);
+                String email = csvRecord.get(HEADERS[2]);
                 if (!isValidEmail(email))
-                    throw new EmailFormatException("Email phải đúng định dạng");
-                LocalDate birthday = LocalDate.parse(csvRecord.get("birthday"), dft);
+                    throw new EmailFormatException(MESSAGE_EMAIL_FORMAT_EXCEPTION);
+                LocalDate birthday = LocalDate.parse(csvRecord.get(HEADERS[3]), DTF);
                 if (!isValidBirthday(birthday))
-                    throw new BirthdayPastException("Ngày sinh phải là quá khứ");
+                    throw new BirthdayPastException(MESSAGE_BIRTHDAY_PAST_EXCEPTION);
                 User user = new User(id, username, email, birthday);
                 users.add(user);
             }
-
             users.forEach(System.out::println);
             return users;
         } catch (IOException e) {
-            throw new RuntimeException("fail to parse CSV file: " + e.getMessage());
+            throw new RuntimeException(String.format("fail to parse CSV file: %s", e.getMessage()));
         }
     }
 
@@ -74,6 +78,6 @@ public class CSVHelper {
 
     private static boolean isValidUsername(String usernameStr) {
         int lengthUsername = usernameStr.length();
-        return usernameStr != null && !usernameStr.isEmpty() && lengthUsername >= 3 && lengthUsername <= 30;
+        return usernameStr != null && !usernameStr.isEmpty() && lengthUsername >= MIN_LENGTH && lengthUsername <= MAX_LENGTH;
     }
 }
